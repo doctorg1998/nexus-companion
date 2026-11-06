@@ -21,6 +21,14 @@
 
 #nxCreditsBtn{position:fixed;right:12px;bottom:12px;z-index:60;padding:7px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.22);background:rgba(13,14,16,.92);color:#cbd5e1;font:600 12px/1 inherit;cursor:pointer}
 #nxCreditsBtn:hover{border-color:#fbbf24;color:#fde68a}
+#nxNewBtn{position:fixed;right:190px;bottom:12px;z-index:60;padding:7px 12px;border-radius:999px;border:1px solid rgba(251,191,36,.55);background:rgba(13,14,16,.92);color:#fde68a;font:600 12px/1 inherit;cursor:pointer}
+#nxNewBtn:hover{background:#fbbf24;color:#05080c}
+@media (max-width:520px){#nxNewBtn{right:12px;bottom:52px}}
+#nxNew .nxp-card{max-width:760px}
+#nxNew h3{margin:18px 0 6px;font-size:13px;letter-spacing:.06em;text-transform:uppercase;opacity:.7}
+#nxNew p,#nxNew li{font-size:13px;line-height:1.55}
+#nxNew li{margin:5px 0}
+#nxNew .nxnew-star{color:#fcd34d}
 #nxCredits .nxp-card{max-width:760px}
 #nxCredits h3{margin:18px 0 6px;font-size:13px;letter-spacing:.06em;text-transform:uppercase;opacity:.7}
 #nxCredits p,#nxCredits li{font-size:13px;line-height:1.55}
@@ -13770,6 +13778,54 @@ window.NXLAB_SPECS = {"helldivers2":{"gid":"helldivers2","pill":"BUILD LAB","tit
 
 
 
+<button type="button" id="nxNewBtn" aria-haspopup="dialog">What's new</button>
+<div id="nxNew" class="nxp-modal" role="dialog" aria-modal="true" aria-labelledby="nxNewTitle">
+<div class="nxp-card">
+<button type="button" class="nxp-btn nxp-x" id="nxNewClose">Close (Esc)</button>
+<h2 id="nxNewTitle">What's new: November 2026</h2>
+<h3>Highlights</h3>
+<ul>
+<li><b class="nxnew-star">Build Labs.</b> Craft your own build instead of copying one. Pick a start, move points or swap items, and watch the charts change.
+<ul>
+<li><b>Cyberpunk 2077:</b> attributes, perks, a damage estimate and a power curve by level.</li>
+<li><b>Helldivers 2:</b> loadout builder with cooldowns, weapon stats and gear text read from the wiki.</li>
+<li><b>Rainbow Six Siege:</b> five-operator squad builder with roles, health and speed ratings from the wiki.</li>
+<li><b>Witcher 3:</b> skill-point planner with each level's effect and prerequisites from the wiki.</li>
+<li><b>Space Marine 2 and Darktide:</b> class composers built from guide text, marked unchecked.</li>
+</ul></li>
+<li><b class="nxnew-star">Claude's Recommended builds</b> for Cyberpunk 2077 Update 2.5: Headshot Gunslinger, Revolver Executioner, Ricochet Storm and Gorilla Arms Juggernaut (shotguns and LMGs).</li>
+<li><b class="nxnew-star">Level 1 to 60 planner</b> for all four recommended builds, in a bar right under the Cyberpunk page tabs.</li>
+</ul>
+<h3>Also new</h3>
+<ul>
+<li>Patch badges show what changed in the latest patch.</li>
+<li>A confidence meter shows how fresh and well sourced each build is.</li>
+<li>Compare two builds side by side in plain language.</li>
+<li>Checklist mode: tick off each step of a build.</li>
+<li>Works on phones and tablets, and now has a credits and licences page.</li>
+</ul>
+<h3>Honesty labels</h3>
+<ul>
+<li>Numbers read from a wiki are marked as verified, with a link and the date they were read.</li>
+<li>Estimates are marked as estimates. In the Cyberpunk lab only three effects use documented numbers.</li>
+<li>Space Marine 2 and Darktide labs say they are unchecked.</li>
+</ul>
+<h3>Fixes</h3>
+<ul>
+<li>A saved lab pick that no longer exists no longer breaks that lab.</li>
+<li>Loading a preset in the Cyberpunk lab no longer wipes your build. An Undo button brings it back.</li>
+<li>Pop-up windows take keyboard focus, and focus returns when they close.</li>
+<li>Buttons keep keyboard focus after each click.</li>
+<li>The League of Legends tabs no longer push the page sideways on a phone.</li>
+</ul>
+<h3>Known limits</h3>
+<ul>
+<li>Darktide builds are being reviewed for the latest hotfix.</li>
+<li>A few skill names in the Witcher builds differ from the wiki's list.</li>
+<li>Some Rainbow Six operators have no role listed on the wiki, so the coverage chart cannot count them.</li>
+<li>League of Legends and Wardogs have no lab yet.</li>
+</ul>
+</div></div>
 <button type="button" id="nxCreditsBtn" aria-haspopup="dialog">Credits and licences</button>
 <div id="nxCredits" class="nxp-modal" role="dialog" aria-modal="true" aria-labelledby="nxCreditsTitle">
 <div class="nxp-card">
@@ -13797,6 +13853,15 @@ window.NXLAB_SPECS = {"helldivers2":{"gid":"helldivers2","pill":"BUILD LAB","tit
   b.addEventListener("click",openC);x.addEventListener("click",closeC);
   m.addEventListener("click",function(e){if(e.target===m)closeC();});
   document.addEventListener("keydown",function(e){if(e.key==="Escape"&&m.classList.contains("on"))closeC();});
+})();
+(function(){
+  var m=document.getElementById("nxNew"),b=document.getElementById("nxNewBtn"),x=document.getElementById("nxNewClose");
+  function openN(){m.classList.add("on");x.focus();}
+  function closeN(){m.classList.remove("on");b.focus();}
+  b.addEventListener("click",openN);x.addEventListener("click",closeN);
+  m.addEventListener("click",function(e){if(e.target===m)closeN();});
+  document.addEventListener("keydown",function(e){if(e.key==="Escape"&&m.classList.contains("on"))closeN();});
+  try{var k="nx_whatsnew_seen_2026_11";if(!localStorage.getItem(k)){b.style.boxShadow="0 0 0 3px rgba(251,191,36,.35)";b.addEventListener("click",function(){try{localStorage.setItem(k,"1");}catch(e){}b.style.boxShadow="";},{once:true});}}catch(e){}
 })();
 </script>
 </body>
