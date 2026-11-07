@@ -14042,10 +14042,11 @@ window.NXLAB_SPECS = {"helldivers2":{"gid":"helldivers2","pill":"BUILD LAB","tit
     busy = true; paintTop();
     var steps = Promise.resolve();
     if (!D.planets || Date.now() - D.planetsAt > 300000) steps = steps.then(function () { return jget("/planets"); }).then(function (v) { if (Array.isArray(v)) { D.planets = v; D.planetsAt = Date.now(); } });
-    var fresh = !force && D.camps && D.assign && D.at && Date.now() - D.at < 20000; // the launcher preview just loaded these
-    if (!fresh) steps = steps.then(loadLive);
+    // checked when this step runs (not earlier): the launcher preview may finish while planets are still loading
+    steps = steps.then(function () { var fresh = !force && D.camps && D.assign && D.at && Date.now() - D.at < 20000; return fresh ? null : loadLive(); });
     return steps.then(function () {
       D.at = Date.now(); D.err = ""; D.first = false;
+      render(); // show everything except the dispatches right away; they are the biggest download
       if (!D.disp || Date.now() - D.dispAt > 600000) return jget("/dispatches").then(function (v) { if (Array.isArray(v)) { D.disp = v; D.dispAt = Date.now(); } }, function (e) { if (e && e.rate) throw e; });
     }).catch(function (e) {
       D.first = false;
@@ -14547,6 +14548,7 @@ window.NXLAB_SPECS = {"helldivers2":{"gid":"helldivers2","pill":"BUILD LAB","tit
 
 </script>
 <!--nxWar:end-->
+
 
 
 
