@@ -13933,20 +13933,21 @@ window.NXLAB_SPECS = {"helldivers2":{"gid":"helldivers2","pill":"BUILD LAB","tit
         return r.json();
       }, function (er) { clearTimeout(t); throw er; });
   }
-  function refresh() {
+  function refresh(force) {
     if (busy || !open_) return Promise.resolve();
     if (Date.now() < backoff) { render(); return Promise.resolve(); }
     busy = true; paintTop();
     var steps = Promise.resolve();
     if (!D.planets || Date.now() - D.planetsAt > 300000) steps = steps.then(function () { return jget("/planets"); }).then(function (v) { if (Array.isArray(v)) { D.planets = v; D.planetsAt = Date.now(); } });
-    steps = steps.then(function () { return jget("/campaigns"); }).then(function (v) { if (Array.isArray(v)) D.camps = v; })
+    var fresh = !force && D.camps && D.assign && D.at && Date.now() - D.at < 20000; // the launcher preview just loaded these
+    if (!fresh) steps = steps.then(function () { return jget("/campaigns"); }).then(function (v) { if (Array.isArray(v)) D.camps = v; })
       .then(function () { return jget("/assignments"); }).then(function (v) { if (Array.isArray(v)) D.assign = v; });
     return steps.then(function () {
       D.at = Date.now(); D.err = ""; D.first = false;
       if (!D.disp || Date.now() - D.dispAt > 600000) return jget("/dispatches").then(function (v) { if (Array.isArray(v)) { D.disp = v; D.dispAt = Date.now(); } }, function (e) { if (e && e.rate) throw e; });
     }).catch(function (e) {
       D.first = false;
-      if (e && e.rate) { backoff = Date.now() + e.rate * 1000; D.err = "The community service asked us to slow down. Trying again in " + e.rate + " seconds."; }
+      if (e && e.rate) { backoff = Date.now() + e.rate * 1000; D.err = "The community service asked us to slow down. Trying again in " + e.rate + " seconds."; setTimeout(function () { if (open_) refresh(); }, e.rate * 1000 + 400); }
       else D.err = "Couldn't reach the community data service. Showing the last data we have, if any.";
     }).then(function () { busy = false; render(); });
   }
@@ -14221,7 +14222,7 @@ window.NXLAB_SPECS = {"helldivers2":{"gid":"helldivers2","pill":"BUILD LAB","tit
       if (!open_) return;
       if (t.hasAttribute("data-nxw-pl")) { sel = Number(t.getAttribute("data-nxw-pl")); render(); return; }
       if (t.hasAttribute("data-nxw-f")) { faction = t.getAttribute("data-nxw-f"); render(); return; }
-      if (t.hasAttribute("data-nxw-refresh")) { refresh(); return; }
+      if (t.hasAttribute("data-nxw-refresh")) { refresh(true); return; }
       if (t.hasAttribute("data-nxw-drill")) { startDrill(); return; }
       if (t.hasAttribute("data-nxw-k")) { press(t.getAttribute("data-nxw-k")); return; }
       if (t.hasAttribute("data-nxw-close")) { closeWar(); return; }
@@ -14244,6 +14245,7 @@ window.NXLAB_SPECS = {"helldivers2":{"gid":"helldivers2","pill":"BUILD LAB","tit
 
 </script>
 <!--nxWar:end-->
+
 
 
 
